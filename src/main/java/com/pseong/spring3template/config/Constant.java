@@ -12,9 +12,9 @@ public class Constant {
             {"/test/login", "GET"}
     };
     public static final String[][] WHITE_LIST_URI_CONTAIN = {
-            {"/swagger-ui", "POST"},
-            {"/swagger-resources", "GET"},
-            {"/v3/api-docs", "GET"}
+            {"/swagger-ui", "ANY"},
+            {"/swagger-resources", "ANY"},
+            {"/v3/api-docs", "ANY"}
     };
 }
 

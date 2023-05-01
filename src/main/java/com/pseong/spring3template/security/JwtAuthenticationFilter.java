@@ -37,10 +37,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getRequestURI();
         String method = request.getMethod();
         for (String[] uri : WHITE_LIST_URI_EQUAL) {
-            if (uri[0].equals(path) && method.equals(uri[1])) return true;
+            if (path.equals(uri[0]) && (uri[1] == "ANY" || method.equals(uri[1]))) return true;
         }
         for (String[] uri : WHITE_LIST_URI_CONTAIN) {
-            if (uri[0].contains(path) && method.equals(uri[1])) return true;
+            if (path.contains(uri[0]) && (uri[1] == "ANY" || method.equals(uri[1]))) return true;
         }
         return false;
     }

@@ -2,6 +2,7 @@ package com.pseong.spring3template.src.login;
 
 import com.pseong.spring3template.config.BaseException;
 import jakarta.transaction.Transactional;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -20,5 +21,8 @@ class LoginServiceTest {
         String password = "mypasword1234@";
         loginService.createUser(username, password);
         loginService.loginPassword(username, password);
+        Assertions.assertThrows(BaseException.class, () -> {
+            loginService.loginPassword(username, "dd");
+        });
     }
 }

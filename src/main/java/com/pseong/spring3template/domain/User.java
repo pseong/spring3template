@@ -15,13 +15,8 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(unique = true)
-    private String sub;
-    @Column(unique = true)
-    private String name;
+    private String username;
     private String roll;
     private LocalDateTime createDate;
     private Boolean active;
-    public User() {
-
-    }
 }

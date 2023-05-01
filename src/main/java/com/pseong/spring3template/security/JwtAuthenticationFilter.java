@@ -40,7 +40,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (path.equals(uri[0]) && (uri[1] == "ANY" || method.equals(uri[1]))) return true;
         }
         for (String[] uri : WHITE_LIST_URI_CONTAIN) {
-            if (path.contains(uri[0]) && (uri[1] == "ANY" || method.equals(uri[1]))) return true;
+            if (path.startsWith(uri[0]) && (uri[1] == "ANY" || method.equals(uri[1]))) return true;
         }
         return false;
     }
@@ -51,8 +51,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         try {
             String path = request.getRequestURI();
-            String sub = jwtService.getUserSub();
-            UserDetails userDetails = customUserDetailsService.loadUserByUsername(sub);
+            Long id = jwtService.getUserId();
+            UserDetails userDetails = customUserDetailsService.loadUserByUserid(id);
 
             UsernamePasswordAuthenticationToken auth =
                     new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());

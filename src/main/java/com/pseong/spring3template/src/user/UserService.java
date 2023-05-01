@@ -12,6 +12,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 import static com.pseong.spring3template.config.BaseResponseStatus.DATABASE_ERROR;
 import static com.pseong.spring3template.config.BaseResponseStatus.DISABLED_USER;
@@ -23,23 +24,25 @@ public class UserService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
 
-    public String login(String sub) throws BaseException {
+    public String login(Long id) throws BaseException {
         try {
-            User user = userRepository.findBySub(sub);
+            Optional<User> opUser = userRepository.findById(id);
+            User user = opUser.get();
             if (user == null) {
                 user = new User();
-                user.setSub(sub);
                 user.setRoll("ROLE_USER");
                 user.setCreateDate(LocalDateTime.now());
                 user.setActive(true);
                 userRepository.save(user);
-                user.setName("유저-" + user.getId());
+
+                // Init User name using user id
+                user.setUsername("유저-" + user.getId());
                 userRepository.save(user);
             }
             if (user.getActive() == false) {
                 throw new BaseException(DISABLED_USER);
             }
-            return jwtService.createJwt(sub);
+            return jwtService.createJwt(id);
         } catch (BaseException exception) {
             throw exception;
         } catch (Exception exception) {

@@ -42,11 +42,6 @@ public class WebSecurityConfig {
     }
 
     @Bean
-    public JwtAuthenticationFilter jwtAuthenticationFilter() {
-        return new JwtAuthenticationFilter(securityUserDetailsService, jwtService, handlerExceptionResolver);
-    }
-
-    @Bean
     protected SecurityFilterChain configure(HttpSecurity http) throws Exception {
         return http
                 .cors().and()
@@ -61,17 +56,10 @@ public class WebSecurityConfig {
                 .authorizeRequests()
                 .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .requestMatchers("/**").permitAll()
-                //.requestMatchers("/user/login").permitAll()
-                //.requestMatchers("/forum").permitAll()
-                //.requestMatchers("/swagger-ui/**").permitAll()
-                //.requestMatchers("/swagger-resources/**").permitAll()
-                //.requestMatchers("/v3/api-docs/**").permitAll()
-                //.requestMatchers("/rank/**").permitAll()
-                //.requestMatchers("/**").authenticated()
                 .anyRequest().permitAll()
                 .and()
                 .formLogin().disable()
-                .addFilterBefore(jwtAuthenticationFilter(),
+                .addFilterBefore(new JwtAuthenticationFilter(securityUserDetailsService, jwtService, handlerExceptionResolver),
                         UsernamePasswordAuthenticationFilter.class)
                 .build();
     }

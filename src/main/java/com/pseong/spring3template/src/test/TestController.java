@@ -39,7 +39,7 @@ public class TestController {
     @GetMapping ("/login")
     public BaseResponse<GetTestLoginRes> getLoginToken() {
         try {
-            return new BaseResponse<>(new GetTestLoginRes(userService.login("1234")));
+            return new BaseResponse<>(new GetTestLoginRes(userService.login(1L)));
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

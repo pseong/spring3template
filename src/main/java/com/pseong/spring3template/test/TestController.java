@@ -2,6 +2,7 @@ package com.pseong.spring3template.test;
 
 import com.pseong.spring3template.config.BaseException;
 import com.pseong.spring3template.config.BaseResponse;
+import com.pseong.spring3template.reqreslog.NoLogging;
 import com.pseong.spring3template.test.model.GetTestRes;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +26,7 @@ public class TestController {
     public BaseResponse<GetTestRes> getError() {
         try {
             throw new BaseException(REQUEST_ERROR);
-        }
-        catch (BaseException exception) {
+        } catch (BaseException exception) {
             return new BaseResponse<>(exception.getStatus());
         }
     }

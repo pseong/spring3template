@@ -64,7 +64,7 @@ public class LoginService {
             User user = null;
             if (oauth == null) {
                 user = createUser();
-                createOAuth(user.getId(), 3L, sub);
+                createOAuth(user, 3L, sub);
             }
             else user = oauth.getUser();
             if (!user.getActive()) {
@@ -95,12 +95,12 @@ public class LoginService {
         }
     }
 
-    public OAuth createOAuth(Long userId, Long type, String sub) throws BaseException {
+    public OAuth createOAuth(User user, Long type, String sub) throws BaseException {
         try {
             OAuth oauth = new OAuth();
             oauth.setType(type);
             oauth.setSub(sub);
-            oauth.setUser(userRepository.getReferenceById(userId));
+            oauth.setUser(user);
             oAuthRepository.save(oauth);
             return oauth;
         } catch (Exception exception) {

@@ -45,15 +45,15 @@ public class TestController {
         }
     }
 
-    @Secured("ROLL_USER")
+    @Secured("ROLE_USER")
     @GetMapping ("/roll/user")
-    public BaseResponse<GetTestRollUserRes> getRollUser() {
+    public BaseResponse<GetTestRollUserRes> getRollUser(@AuthenticationPrincipal SecurityUser securityUser) {
         return new BaseResponse<>(new GetTestRollUserRes("1"));
     }
 
-    @Secured("ROLL_ADMIN")
+    @Secured("ROLE_ADMIN")
     @GetMapping ("/roll/admin")
-    public BaseResponse<GetTestRollAdminRes> getRollAdmin() {
+    public BaseResponse<GetTestRollAdminRes> getRollAdmin(@AuthenticationPrincipal SecurityUser securityUser) {
         return new BaseResponse<>(new GetTestRollAdminRes("1"));
     }
 }

@@ -10,9 +10,10 @@ import com.pseong.spring3template.src.user.UserRepository;
 import com.pseong.spring3template.utils.JwtService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
+import org.apache.commons.lang3.RandomStringUtils;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
@@ -30,6 +31,7 @@ public class LoginService {
     private final JwtService jwtService;
     private final UserRepository userRepository;
     private final OAuthRepository oAuthRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public String loginKakao(String accessToken) throws BaseException {
         String sub = null;
@@ -68,7 +70,24 @@ public class LoginService {
             if (!user.getActive()) {
                 throw new BaseException(DISABLED_USER);
             }
-            return login(oauth.getUser().getUsername());
+            return jwtService.createJwt(oauth.getUser().getUsername());
+        } catch (BaseException exception) {
+            throw exception;
+        } catch (Exception exception) {
+            throw new BaseException(DATABASE_ERROR);
+        }
+    }
+
+    public String loginPassword(String username, String password) throws BaseException {
+        try {
+            User user = userRepository.findByUsername(username);
+            if (user == null) {
+                throw new BaseException(FAILED_TO_PASSWORD_LOGIN);
+            }
+            if (!passwordEncoder.matches(password, user.getPassword())) {
+                throw new BaseException(FAILED_TO_PASSWORD_LOGIN);
+            }
+            return jwtService.createJwt(username);
         } catch (BaseException exception) {
             throw exception;
         } catch (Exception exception) {
@@ -96,6 +115,7 @@ public class LoginService {
             user.setCreateDate(LocalDateTime.now());
             user.setActive(true);
             user.setUsername(UUID.randomUUID().toString());
+            user.setPassword(passwordEncoder.encode(RandomStringUtils.randomAlphanumeric(16)));
             userRepository.save(user);
             return user;
         } catch (Exception exception) {
@@ -103,11 +123,18 @@ public class LoginService {
         }
     }
 
-    public String login(String username) throws BaseException {
+    public User createUser(String username, String password) throws BaseException {
         try {
-            return jwtService.createJwt(username);
+            User user = new User();
+            user.setRoll("ROLE_USER");
+            user.setCreateDate(LocalDateTime.now());
+            user.setActive(true);
+            user.setUsername(username);
+            user.setPassword(passwordEncoder.encode(password));
+            userRepository.save(user);
+            return user;
         } catch (Exception exception) {
-            throw new BaseException(JWT_ERROR);
+            throw new BaseException(DATABASE_ERROR);
         }
     }
 }

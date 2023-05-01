@@ -1,12 +1,11 @@
-package com.pseong.spring3template.src.test.model;
+package com.pseong.spring3template.src.login.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class GetTestLoginRes {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class PostLoginKakaoReq {
     private String token;
 }

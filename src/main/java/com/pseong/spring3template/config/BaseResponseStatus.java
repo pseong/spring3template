@@ -67,6 +67,7 @@ public enum BaseResponseStatus {
      * 4000 : Database, Server 오류
      */
     DATABASE_ERROR(false, 4000, "데이터베이스 연결에 실패하였습니다."),
+    JWT_ERROR(false, 4000, "로그인 토큰 생성에 실패하였습니다."),
     SERVER_ERROR(false, 4001, "서버와의 연결에 실패하였습니다."),
 
     EXISTS_USERNAME(false,4014,"중복된 닉네임입니다."),

@@ -14,11 +14,11 @@ import java.util.Date;
 @Component
 public class JwtService {
 
-    public String createJwt(Long id) {
+    public String createJwt(String username) {
         Date now = new Date();
         return Jwts.builder()
                 .setHeaderParam("type","jwt")
-                .claim("id", id)
+                .claim("username", username)
                 .setIssuedAt(now)
                 .setExpiration(new Date(System.currentTimeMillis()+1000*60*60*6)) //1*(1000*60*60*24*365)))
                 .signWith(SignatureAlgorithm.HS256, Secret.JWT_SECRET_KEY)
@@ -30,7 +30,7 @@ public class JwtService {
         return request.getHeader("Authorization");
     }
 
-    public Long getUserId() throws BaseException {
+    public String getUsername() throws BaseException {
         // JWT 추출
         String accessToken = getJwt();
         if (accessToken == null || accessToken.length() == 0) {
@@ -53,9 +53,9 @@ public class JwtService {
         }
 
         // userIdx 추출
-        Long id = claims.getBody().get("id", Long.class);
-        if (id == null) throw new BaseException(BaseResponseStatus.INVALID_JWT);
+        String username = claims.getBody().get("username", String.class);
+        if (username == null) throw new BaseException(BaseResponseStatus.INVALID_JWT);
 
-        return id;
+        return username;
     }
 }

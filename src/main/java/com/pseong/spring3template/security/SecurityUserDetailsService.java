@@ -17,22 +17,12 @@ public class SecurityUserDetailsService implements UserDetailsService {
     private final UserRepository userRepository;
 
     @Override
-    public UserDetails loadUserByUsername(String username)
-            throws UsernameNotFoundException {
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         User user = userRepository.findByUsername(username);
         if (user == null) {
             throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");
         }
         return new SecurityUser(user);
-    }
-    public UserDetails loadUserByUserid(Long userId)
-            throws UsernameNotFoundException {
-
-        Optional<User> user = userRepository.findById(userId);
-        if (user.isEmpty()) {
-            throw new UsernameNotFoundException("해당 유저가 존재하지 않습니다.");
-        }
-        return new SecurityUser(user.get());
     }
 }

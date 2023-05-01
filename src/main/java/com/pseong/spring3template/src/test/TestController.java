@@ -3,6 +3,7 @@ package com.pseong.spring3template.src.test;
 import com.pseong.spring3template.config.BaseException;
 import com.pseong.spring3template.config.BaseResponse;
 import com.pseong.spring3template.security.SecurityUser;
+import com.pseong.spring3template.src.login.LoginService;
 import com.pseong.spring3template.src.test.model.GetTestLoginRes;
 import com.pseong.spring3template.src.test.model.GetTestRes;
 import com.pseong.spring3template.src.test.model.GetTestRollAdminRes;
@@ -21,7 +22,7 @@ import static com.pseong.spring3template.config.BaseResponseStatus.REQUEST_ERROR
 @RequestMapping("/test")
 @RequiredArgsConstructor
 public class TestController {
-    private final UserService userService;
+    private final LoginService loginService;
     @GetMapping ("")
     public BaseResponse<SecurityUser> getName(@AuthenticationPrincipal SecurityUser securityUser) {
         return new BaseResponse<>(securityUser);
@@ -39,7 +40,7 @@ public class TestController {
     @GetMapping ("/login")
     public BaseResponse<GetTestLoginRes> getLoginToken() {
         try {
-            return new BaseResponse<>(new GetTestLoginRes(userService.login(1L)));
+            return new BaseResponse<>(new GetTestLoginRes(loginService.login("8ca37b63-e270-4d54-931b-b8cbcfae8f92")));
         } catch (BaseException exception) {
             return new BaseResponse<>((exception.getStatus()));
         }

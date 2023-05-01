@@ -10,13 +10,15 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import jakarta.servlet.http.HttpServletRequest;
 
+import java.time.LocalDateTime;
+
 import static com.pseong.spring3template.config.BaseResponseStatus.SUCCESS;
 
 @Getter
 @AllArgsConstructor
 @JsonPropertyOrder({"isSuccess", "code", "message", "result"})
 public class BaseResponse<T> {
-    // private final LocalDateTime timestamp;
+    private final LocalDateTime timestamp;
     private final String path;
     @JsonProperty("isSuccess")
     private final Boolean isSuccess;
@@ -31,7 +33,7 @@ public class BaseResponse<T> {
         this.message = SUCCESS.getMessage();
         this.code = SUCCESS.getCode();
         this.result = result;
-        // this.timestamp = LocalDateTime.now();
+        this.timestamp = LocalDateTime.now();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         this.path = request.getRequestURI();
     }
@@ -41,7 +43,7 @@ public class BaseResponse<T> {
         this.isSuccess = status.isSuccess();
         this.message = status.getMessage();
         this.code = status.getCode();
-        // this.timestamp = LocalDateTime.now();
+        this.timestamp = LocalDateTime.now();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         this.path = request.getRequestURI();
     }
@@ -52,7 +54,7 @@ public class BaseResponse<T> {
         this.message = status.getMessage();
         this.code = status.getCode();
         this.result = result;
-        // this.timestamp = LocalDateTime.now();
+        this.timestamp = LocalDateTime.now();
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         this.path = request.getRequestURI();
     }

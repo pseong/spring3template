@@ -22,6 +22,7 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static com.pseong.spring3template.config.BaseResponseStatus.*;
+import static com.pseong.spring3template.config.Constant.KAKAO_TYPE;
 
 @Slf4j
 @Service
@@ -33,11 +34,10 @@ public class LoginService {
     private final OAuthRepository oAuthRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public String loginKakao(String accessToken) throws BaseException {
-        String sub = null;
-        String requestURL = "https://kapi.kakao.com/v2/user/me";
-
+    public String getKaKaoSub(String accessToken) throws BaseException {
         try {
+            String requestURL = "https://kapi.kakao.com/v2/user/me";
+
             URL url = new URL(requestURL);
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
 
@@ -55,16 +55,19 @@ public class LoginService {
 
             JsonParser parser = new JsonParser();
             JsonElement element = parser.parse(result);
-            sub = element.getAsJsonObject().get("id").getAsString();
+            return element.getAsJsonObject().get("id").getAsString();
         } catch (Exception e) {
             throw new BaseException(FAILED_TO_KAKAO_LOGIN);
         }
+    }
+    public String loginKakao(String accessToken) throws BaseException {
         try {
-            OAuth oauth = oAuthRepository.findByTypeAndSub(3L, sub);
+            String sub = getKaKaoSub(accessToken);
+            OAuth oauth = oAuthRepository.findByTypeAndSub(KAKAO_TYPE, sub);
             User user = null;
             if (oauth == null) {
                 user = createUser();
-                createOAuth(user, 3L, sub);
+                createOAuth(user, KAKAO_TYPE, sub);
             }
             else user = oauth.getUser();
             if (!user.getActive()) {

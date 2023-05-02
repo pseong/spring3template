@@ -44,22 +44,26 @@ public class LoginService {
             conn.setRequestMethod("GET");
             conn.setRequestProperty("Authorization", "Bearer " + accessToken);
 
-            int responseCode = conn.getResponseCode();
-            BufferedReader buffer = new BufferedReader(new InputStreamReader(conn.getInputStream()));
+            if (conn.getResponseCode() != HttpURLConnection.HTTP_OK) {
+                throw new BaseException(FAILED_TO_KAKAO_LOGIN);
+            }
 
-            String line = "";
-            String result = "";
-            while ((line = buffer.readLine()) != null) {
-                result +=line;
+            StringBuilder result = new StringBuilder();
+            try (BufferedReader buffer = new BufferedReader(new InputStreamReader(conn.getInputStream()))) {
+                String line;
+                while ((line = buffer.readLine()) != null) {
+                    result.append(line);
+                }
             }
 
             JsonParser parser = new JsonParser();
-            JsonElement element = parser.parse(result);
+            JsonElement element = parser.parse(result.toString());
             return element.getAsJsonObject().get("id").getAsString();
         } catch (Exception e) {
             throw new BaseException(FAILED_TO_KAKAO_LOGIN);
         }
     }
+
     public String loginKakao(String accessToken) throws BaseException {
         try {
             String sub = getKaKaoSub(accessToken);
